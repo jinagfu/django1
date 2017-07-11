@@ -4,14 +4,45 @@
 		$(function(){
 			$(".user_error").show();
 			$(".pwd_error").show();
+			flag_name = false;
+			flag_pwd = false;
+			$('from').submit(function() {
+				if (flag_name && flag_pwd) {
+					return true;
+				}
+				else{return false;}
+			});
 			//写ｊｓ判断用户名和密码格式是否正确，才能提交
+			$('#username').blur(function(){
+				name_len = $(this).val().length;
+				if (name_len<5 || name_len>20){
+					$(".user_error").html('请输入5-20个字符的用户名');
+					flag_name = false;
+				}
+				else {
+					$(".user_error").html('');
+					flag_name = true;
+				}
+			});
+			$("#userpwd").blur(function(){
+				pwd_len = $(this).val().length;
+				if (pwd_len<8 || pwd_len>20){
+					$(".pwd_error").html('密码最少8位，最长20位');
+					flag_pwd = false;
+				}
+				else {
+					$(".pwd_error").html('{{pwd_error}}');
+					flag_pwd = true;
+				}
+				
+			});
 
 			
 		});
 	</script>
 {%endblock head%}
 	
-
+{%block search%}{%endblock search%}	
 {%block body%}
 
 	<div class="login_top clearfix">
@@ -30,9 +61,9 @@
 				<div class="form_input">
 					<form action="/user/login_handel/" method="post">
 					{%csrf_token%}
-						<input type="text" name="username" class="name_input" placeholder="请输入用户名">
+						<input type="text" name="username" id="username" class="name_input" placeholder="请输入用户名">
 						<div class="user_error">{{name_error}}</div>
-						<input type="password" name="pwd" class="pass_input" placeholder="请输入密码">
+						<input type="password" name="pwd" id="userpwd" class="pass_input" placeholder="请输入密码">
 						<div class="pwd_error">{{pwd_error}}</div>
 						<div class="more_input clearfix">
 							<input type="checkbox" value="1" name="checkbox" id="checkbox">

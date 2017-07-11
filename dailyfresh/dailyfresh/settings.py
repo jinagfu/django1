@@ -39,6 +39,11 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'df_user',  #注册用户应用
+    'df_goods',  #注册商品应用
+    'tinymce',  #注册　富文本　应用
+    'haystack',  #注册　全文检索　应用
+    'df_cart',  #注册购物车应用
+
 )
 
 MIDDLEWARE_CLASSES = (
@@ -50,6 +55,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'df_user.middleware.UrlPathMiddleware',  #注册自定义中间键－－自定义跳转
 )
 
 ROOT_URLCONF = 'dailyfresh.urls'
@@ -107,6 +113,44 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+# 多媒体文件（影音图片）存放地址，
+MEDIA_ROOT = os.path.join(BASE_DIR, 'static')
+
+# 富文本设置
+TINYMCE_DEFAULT_CONFIG = {
+    'theme': 'advanced',
+    'width': 600,
+    'height': 400,
+}
+
+# 全文检索配置
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        #使用whoosh引擎
+        'ENGINE': 'haystack.backends.whoosh_cn_backend.WhooshEngine',
+        #索引文件路径
+        'PATH': os.path.join(BASE_DIR, 'whoosh_index'),
+    }
+}
+#当添加、修改、删除数据时，自动生成索引
+HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
+# 一页显示的数量
+HAYSTACK_SEARCH_RESULTS_PER_PAGE = 12
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

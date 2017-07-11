@@ -11,8 +11,9 @@ urlpatterns=[
 	url(r'^login_handel/$', views.login_handel),  #　用户登入处理
 	url(r'^center/$', views.center),  #　用户中心页
 	url(r'^order/$', views.order),  #　用户全部订单
-	url(r'^site/$', views.site),  #　用户收货地址
-	# url(r'^center/$', views.center),  #　用户中心页
+	url(r'^site/$', views.site),  #　用户收货地址／添加地址信息
+	url(r'^logout/$', views.logout),  #　用户退出
+
 
 
 ]

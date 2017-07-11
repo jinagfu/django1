@@ -1,9 +1,10 @@
 # coding=utf-8
 from django.shortcuts import render,redirect
-
+from user_decorator import isLogin
 # Create your views here.
 from django.http import HttpResponse,JsonResponse
 from df_user.models import *
+from df_goods.models import *
 from hashlib import sha1
 import datetime
 
@@ -60,11 +61,16 @@ def login_handel(request):
 	s1.update(pwd)
 	pwd_sha1 = s1.hexdigest()
 	context={'title':'登入','top':'0'}
-	# 判断用户名和密码是否正确
+	# 判断用户名和密码是否正确   返回的是个一个列表信息
 	user = UserInfo.objects.filter(uname=username)
 	if len(user) > 0:
 		if user[0].upwd==pwd_sha1:
-			response=redirect('/user/center/')
+			# response=redirect('/user/center/')
+							#　从自定义中间件获取地址　设置默认地址：/user/center/
+			response=redirect(request.session.get('url_path','/user/center/'))
+			# #登入用户记录下来　　　　－－－－－－－－－－－－－－－－－－－－－
+			request.session['uid']=user[0].id  
+			request.session['uname']=user[0].uname
 			if checkbox == '1':
 				response.set_cookie('username',username, expires=datetime.datetime.now() + datetime.timedelta(days = 14))
 			else:
@@ -77,22 +83,59 @@ def login_handel(request):
 		context['name_error'] = '用户名不存在！'
 		return render(request, 'df_user/login.html', context)
 
-
-
+# 用户中心－－个人信息
+@isLogin  #装饰器，未登入页不能访问，跳转到登入页
 def center(request):
-	context={'title':'用户信息'}
+	# filter查找结果是QuerySet，一个列表
+	user=UserInfo.objects.get(pk=request.session['uid'])
+	# 浏览商品列对象
+	ids = request.COOKIES.get('goods_ids','').split(',') #[:-1]最后一个是''
+	glist = []
+	for gid in ids:
+		glist.append(GoodsInfo.objects.get(id=gid))
+
+	context={'title':'用户中心','username':user.uname,'uphone':user.uphone,'ucode':user.ucode,'search':'0','glist':glist}
 	return render(request, 'df_user/center.html',context)
 
-
-
+# 订单信息
+@isLogin
 def order(request):
-	context={'title':'全部订单'}
+	context={'title':'用户中心','search':'0'}
 	return render(request, 'df_user/order.html',context)
 
-
+# 收货地址
+@isLogin
 def site(request):
-	context={'title':'收货地址'}
+	user=UserInfo.objects.get(pk=request.session['uid'])
+	#post请求，修改当前用户对象的收货信息
+	if request.method == 'POST':
+		# 获取用户提交的收货信息
+		post = request.POST
+		shouname = post.get('shouname')
+		shouadd = post.get('shouadd')
+		shoucode = post.get('shoucode')
+		shouphone = post.get('shouphone')
+		# 添加或修改数据库中的信息
+		user.uaddress=shouadd
+		user.ushou=shouname
+		user.ucode=shoucode
+		user.uphone=shouphone
+		user.save()
+	context={'title':'用户中心','user':user,'search':'0'}	
 	return render(request, 'df_user/site.html',context)
+
+# 用户退出
+def logout(request):
+	# 退出删除所有的ｓｅｓｓｉｏｎ记录
+	request.session.flush()
+	return redirect('/user/login/')  #重定向到登入页面
+
+
+
+
+
+	
+
 
 
 

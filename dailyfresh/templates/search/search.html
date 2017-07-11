@@ -1,0 +1,53 @@
+{%extends 'base.html'%}
+
+
+
+
+{%block body%}
+	<div class="main_wrap clearfix">
+		<!-- <div class="r_wrap fr clearfix"> -->
+		<ul class="goods_type_list clearfix">
+			{%for goods in page_obj%}
+			<li>
+				<a href="/detail{{goods.object.id}}/"><img src="/static/{{goods.object.gpic}}"></a>
+				<h4><a href="/detail{{goods.object.id}}/">{{goods.object.gtitle}}</a></h4>
+				<div class="operate">
+					<span class="prize">￥{{goods.object.gprice}}</span>
+					<span class="unit">{{goods.object.gprice}}/{{goods.object.gunit}}</span>
+					<a href="#" class="add_goods" title="加入购物车"></a>
+				</div>
+			</li>
+			{%endfor%}
+
+		</ul>
+		<div class="pagenation">
+			{%for pindex in page_obj.paginator.page_range%}
+			    {%if pindex == page_obj.number%}
+			    	<a href="#" class="active">{{pindex}}&nbsp;&nbsp;</a>
+			      
+			    {%else%}
+			        <a href="?q={{query}}&amp;page={{pindex}}">{{pindex}}</a>&nbsp;&nbsp;
+			    {%endif%}
+			{%endfor%}
+		</div>
+
+		<!-- </div> -->
+
+
+	</div>
+
+
+
+
+
+
+
+
+
+
+
+{%endblock body%}
+
+
+
+

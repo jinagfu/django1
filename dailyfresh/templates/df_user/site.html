@@ -1,6 +1,64 @@
 {%extends 'base.html'%}
 {%block head%}
-	
+	<script type="text/javascript">
+		$(function(){
+			
+			flag_name = false;
+			flag_code = false;
+			flag_phone = false;
+
+			$('form').submit(function() {
+				$('#shouname').blur()
+				$('#shoucode').blur()
+				$('#shouphone').blur()
+				// alert("flag_name:"flag_name);
+				// alert("flag_code:"flag_code);
+				// alert("flag_phone:"flag_phone);
+
+				if (flag_name&&flag_code&&flag_phone) {return true}
+				else {
+					return false
+				}
+				
+			});
+			//写ｊｓ判断表单内容格式是否正确，才能提交
+			$('#shouname').blur(function(){
+				name_len = $(this).val().length;
+				if (name_len<2 || name_len>4){
+					$('#shouname').next().html('请输入2-4个字符的用户名').css({'color':'red'});
+					flag_name = false;
+				}
+				else {
+					$('#shouname').next().html('');
+					flag_name = true;
+				}
+			});
+			$("#shoucode").blur(function(){
+				code_len = $(this).val().length;
+				if (code_len ==6){
+					$("#shoucode").next().html('');
+					flag_code = true;
+				}
+				else {
+					$("#shoucode").next().html('邮编６位').css({'color':'red'});
+					flag_code = false;
+				}
+			});
+			$("#shouphone").blur(function(){
+				phone_len = $(this).val().length;
+				if (phone_len ==11){
+					$("#shouphone").next().html('');
+					flag_code = true;
+				}
+				else {
+					$("#shouphone").next().html('电话号码１１位').css({'color':'red'});
+					flag_code = false;
+				}
+			});
+		});
+
+
+	</script>
 {%endblock head%}
 	
 
@@ -20,27 +78,32 @@
 				<div class="site_con">
 					<dl>
 						<dt>当前地址：</dt>
-						<dd>北京市 海淀区 东北旺西路8号中关村软件园 （李思 收） 182****7528</dd>
+						<dd>{{user.uaddress}}&nbsp;&nbsp;&nbsp;({{user.ushou}} 收)&nbsp;&nbsp;&nbsp;{{user.uphone}}</dd>
 					</dl>					
 				</div>
 				<h3 class="common_title2">编辑地址</h3>
 				<div class="site_con">
-					<form>
+					<form action="/user/site/" method="post">
+						{%csrf_token%}
 						<div class="form_group">
 							<label>收件人：</label>
-							<input type="text" name="">
+							<input type="text" name="shouname" id="shouname">
+							<div></div>
 						</div>
 						<div class="form_group form_group2">
 							<label>详细地址：</label>
-							<textarea class="site_area"></textarea>
+							<textarea class="site_area" name="shouadd" id="shouadd"></textarea>
+							<div></div>
 						</div>
 						<div class="form_group">
 							<label>邮编：</label>
-							<input type="text" name="">
+							<input type="text" name="shoucode" id="shoucode">
+							<div></div>
 						</div>
 						<div class="form_group">
 							<label>手机：</label>
-							<input type="text" name="">
+							<input type="text" name="shouphone" id="shouphone"><span></span>
+							
 						</div>
 
 						<input type="submit" name="" value="提交" class="info_submit">
