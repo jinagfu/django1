@@ -13,6 +13,7 @@ class UrlPathMiddleware:
 			'/user/register_ckname/',
 			'/user/login/',
 			'/user/logout/',
+			'/user/user_islogin/',
 			'/user/login_handel/']:
 			request.session['url_path']=path   #记录路径
 

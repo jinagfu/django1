@@ -21,7 +21,7 @@
 
 		</ul>
 		<div class="pagenation">
-			{%for pindex in page_obj.paginator.page_range%}
+			{%for pindex in pagelist%}
 			    {%if pindex == page_obj.number%}
 			    	<a href="#" class="active">{{pindex}}&nbsp;&nbsp;</a>
 			      

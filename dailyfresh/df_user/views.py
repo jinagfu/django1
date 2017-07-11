@@ -83,6 +83,16 @@ def login_handel(request):
 		context['name_error'] = '用户名不存在！'
 		return render(request, 'df_user/login.html', context)
 
+
+# 判断是否登入
+def user_islogin(request):
+	result = 0
+	if request.session.has_key('uid'):
+		result = 1
+	return JsonResponse({"result":result})
+
+
+
 # 用户中心－－个人信息
 @isLogin  #装饰器，未登入页不能访问，跳转到登入页
 def center(request):

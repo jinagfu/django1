@@ -1,7 +1,35 @@
 {%extends 'base.html'%}
 
 {%block head%}
-	
+	<script type="text/javascript">
+		function add_cart(gid) {
+			//登录判断
+			// alert('正在检验');
+			$.get('/user/user_islogin/',function(data){
+				if (data.result) {
+				// 用户已经登入 ，加入购物车
+					$.get('/cart/add/',{'gid':gid},function(data){
+						alert(data.isadd);
+						if (data.isadd) {
+							alert('成功添加到购物车');
+						}
+						else {
+							alert('添加购物车失败');
+						}
+					});
+				}
+				else {
+					//如果未登录，则tiao zhuan登录
+					// alert('未登入');
+					location.href='/user/login/';
+				}
+			});
+
+
+		};
+
+	</script>
+
 {%endblock head%}
 
 
@@ -56,7 +84,7 @@
 			</div>
 		</div>
 
-{%load filters%}
+{%load filters%}{#自定义过滤器　＊－１　点击切换排序方式#}
 		<div class="r_wrap fr clearfix">
 			<div class="sort_bar">
 			<a href="/list{{t1.id}}_/?order=1" {%if order == 1%} class="active"{%endif%}>默认</a>
@@ -74,7 +102,7 @@
 					<div class="operate">
 						<span class="prize">￥{{goods.gprice}}</span>
 						<span class="unit">{{goods.gprice}}/{{goods.gunit}}</span>
-						<a href="#" class="add_goods" title="加入购物车"></a>
+						<a href="javascript:add_cart({{goods.id}});" class="add_goods" title="加入购物车"></a>
 					</div>
 				</li>
 				{%endfor%}

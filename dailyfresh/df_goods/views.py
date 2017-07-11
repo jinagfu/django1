@@ -11,7 +11,7 @@ from django.core.paginator import Paginator
 # 首页
 def index(request):
 	# 获取登入用户对象
-	user=UserInfo.objects.get(pk=request.session['uid'])
+	# user=UserInfo.objects.get(pk=request.session['uid'])
 
 	# 获取商品lei对象　
 	typeList = TypeInfo.objects.all()
@@ -21,7 +21,7 @@ def index(request):
 		clickList=temp.goodsinfo_set.order_by('-id')[0:4]  #降序排列
 		list1.append({'goodsList':goodsList,'clickList':clickList,'tl':temp})
 	
-	context={'title':'首页','user':user,'list1':list1}
+	context={'title':'首页','list1':list1}  # 'user':user,
 	return render(request, 'df_goods/index.html', context)
 
 # 商品列表
@@ -29,8 +29,8 @@ def list(request,pid,pIndex):
 	# 获取登入用户对象
 	# user=UserInfo.objects.get(pk=request.session['uid']) 
 	order = int(request.GET.get('order',1)) #获取排序参数
-	desc = int(request.GET.get('desc', 1)) #价格排序：降序 或者 升序  *-1 来判断
-
+	desc = int(request.GET.get('desc','1')) #价格排序：降序 或者 升序  *-1 来判断
+	
 	t1 = TypeInfo.objects.get(pk=int(pid))
 	if order == 1:
 		glist= t1.goodsinfo_set.all().order_by('-id')
@@ -60,13 +60,13 @@ def list(request,pid,pIndex):
 def detail(request,num):
 	
 	# 获取登入用户对象
-	user=UserInfo.objects.get(pk=request.session['uid']) 
+	# user=UserInfo.objects.get(pk=request.session['uid']) 
 	# 获取商品
 	goods = GoodsInfo.objects.get(id=num)
 	goods.gclick+=1   #添加点击量＋１
 	goods.save()
 	click_list=GoodsInfo.objects.filter(gtype=goods.gtype).order_by('-gclick')[0:2]
-	context={'title':'商品详情','user':user,'goods':goods,'list':click_list}
+	context={'title':'商品详情','goods':goods,'list':click_list}  #'user':user,
 
 	# 设置cookie　用于记录　最近浏览　前５个商品
 	response = render(request, 'df_goods/detail.html', context)

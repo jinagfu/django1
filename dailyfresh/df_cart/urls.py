@@ -1,10 +1,12 @@
-# coding=utf-8
+#coding=utf-8
 
 from django.conf.urls import url
-import views
+from df_cart import views
 
 urlpatterns = [
-	# url(r'^cart/', include('df_cart.urls')),
+	url(r'^$', views.cart),
+	url(r'^add/$', views.add),
+	url(r'^count/$', views.count),
 
 ]
 
