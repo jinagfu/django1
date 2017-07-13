@@ -44,9 +44,21 @@ def count(request):
 	# count1=CartInfo.objects.filter(user_id=uid).aggregate(Sum('count')).get('count__sum')#字典
 	return JsonResponse({"count":count1})
 
+#修改购物车商品的数量
+def edit(request):
+	cart_id = int(request.GET.get('id'))
+	count = int(request.GET.get('count'))
+	cart = CartInfo.objects.get(pk=cart_id)
+	cart.count = count
+	cart.save()   #需要保存才能修改数据库数据
+	return JsonResponse({"ok":1})
 
-
-
+#删除购物车商品
+def delete(request):
+	cart_id = int(request.GET.get('cart_id'))
+	cart = CartInfo.objects.get(pk=cart_id)
+	cart.delete()
+	return JsonResponse({'ok':1})
 
 
 

@@ -51,11 +51,11 @@
 			<input type="submit" class="input_btn fr"  value="搜索"></form>
 		</div>
 		<div class="guest_cart fr">
-			<a href="#" class="cart_name fl">我的购物车</a>
+			<a href="/cart/" class="cart_name fl">我的购物车</a>
 			<div class="goods_count fl" id="show_count">0</div>
 		</div>
 	</div>
-	<script>                          {# yi deng ru #}
+	<script>                          {# 判断已登入 #}
 		if($('.login_btn').text().indexOf('登录')<0){
 		    $.get('/cart/count/',function (data) {
 				$('#show_count').text(data.count);

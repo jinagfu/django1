@@ -43,6 +43,7 @@ INSTALLED_APPS = (
     'tinymce',  #注册　富文本　应用
     'haystack',  #注册　全文检索　应用
     'df_cart',  #注册购物车应用
+    'df_order',  #注册 订单　应用
 
 )
 
