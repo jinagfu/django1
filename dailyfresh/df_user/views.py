@@ -5,6 +5,8 @@ from user_decorator import isLogin
 from django.http import HttpResponse,JsonResponse
 from df_user.models import *
 from df_goods.models import *
+from df_order.models import *
+from django.core.paginator import Paginator
 from hashlib import sha1
 import datetime
 
@@ -110,7 +112,28 @@ def center(request):
 # 订单信息
 @isLogin
 def order(request):
-	context={'title':'用户中心','search':'0'}
+	# 获取订单对象内容
+	uid = request.session.get('uid')
+	order_list = OrderMain.objects.filter(user_id=uid)
+
+	# 分页，订单分页
+	paginator = Paginator(order_list,3)
+	# 接收分页页码
+	pindex = int(request.GET.get('pindex',1))
+	page = paginator.page(pindex)  # 第pindex页的内容
+
+	# 分页页码列表
+	page_list=[]
+	if paginator.num_pages <= 5:
+		page_list=paginator.page_range
+	elif pindex <=2 :
+		page_list=range(1,5+1)
+	elif pindex >= paginator.num_pages-1:
+		page_list=range(paginator.num_pages-4,paginator.num_pages+1)
+	else:
+		page_list = range(pindex-2,pindex+3)
+
+	context={'title':'用户订单','search':'0','order_page':page,'page_list':page_list}
 	return render(request, 'df_user/order.html',context)
 
 # 收货地址

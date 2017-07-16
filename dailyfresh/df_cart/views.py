@@ -25,7 +25,10 @@ def add(request):
 
 		cart = CartInfo.objects.filter(user_id=uid,goods_id=gid)
 		if len(cart) == 1:#如果用户uid已经购买了商品gid，则将数量+count
-			cart[0].count+=count
+			if cart[0].goods.gkucun < cart[0].count+count:  #先判断库存与购买量
+				return JsonResponse({'isadd':2})
+			else:
+				cart[0].count+=count
 			cart[0].save()
 		else:
 			cart = CartInfo()

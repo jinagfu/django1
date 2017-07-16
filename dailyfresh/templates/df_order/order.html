@@ -2,25 +2,7 @@
 
 {%block head%}
 	<script type="text/javascript">
-		// function total() {
-		// 	total_all=0;
-		// 	$(".goods_list_td").each(function() {
-		// 		price = parseFloat($(this).children(".col05").text());
-		// 		count = parseInt($(this).children(".col06").text());
-		// 		total_one = price*count;
-		// 		$(this).children(".col07").text(total_one.toFixed(2)+'元');
-		// 		total_all+=total_one;
-		// 	});
-		// 	$(".total_goods_count em").text($(".goods_list_td").length)
-		// 	// 所有商品　总价格
-		// 	$(".total_goods_count b").text(total_all.toFixed(2)+'元');
-		// 	// 运费
-		// 	transit = parseFloat($(".transit b").text());
-		// 	// 实付费用
-		// 	total_pay = total_all + transit;
-		// 	$(".total_pay b").text(total_pay.toFixed(2)+'元');
-		// }
-
+		
 		$(function() {
 			total_all=0;
 			$(".goods_list_td").each(function() {
@@ -104,9 +86,15 @@
 		</div>
 	</div>
 
+<form method="post" action="/order/do_order/">
+	{%csrf_token%}
+	<input type="hidden" name="cart_id_list" value="{{cart_id_list}}">
 	<div class="order_submit clearfix">
-		<a href="javascript:;" id="order_btn">提交订单</a>
-	</div>	
+		<!-- <a href="javascript:;" id="order_btn">提交订单</a> -->
+		<input type="submit" value="提交订单">
+	</div>
+
+</form>
 
 {%endblock body%}
 

@@ -9,23 +9,21 @@
 				if (data.result) {
 				// 用户已经登入 ，加入购物车
 					$.get('/cart/add/',{'gid':gid},function(data){
-						alert(data.isadd);
-						if (data.isadd) {
+						//alert(data.isadd);
+						if (data.isadd==1) {
 							alert('成功添加到购物车');
-						}
-						else {
-							alert('添加购物车失败');
+						}else if (data.isadd==0) {
+								alert('购买失败，请稍候重试');
+						}else if (data.isadd==2) {
+							alert('库存不足，请与客服联系');
 						}
 					});
-				}
-				else {
+				}else {
 					//如果未登录，则tiao zhuan登录
 					// alert('未登入');
 					location.href='/user/login/';
 				}
 			});
-
-
 		};
 
 	</script>

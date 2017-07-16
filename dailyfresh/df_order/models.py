@@ -10,8 +10,8 @@ class OrderMain(models.Model):
 	order_time = models.DateTimeField(auto_now_add=True)
 	user = models.ForeignKey(UserInfo)
 	# 总价  整数位数　　: 小数位数
-	total = models.DecimalField(max_digits=8,decimal_places=2)
-
+	total = models.DecimalField(max_digits=8,decimal_places=2,default=0)
+	state=models.IntegerField(default=0)
 
 class OrderDetail(models.Model):
 	order = models.ForeignKey(OrderMain)
