@@ -1,0 +1,170 @@
+{%extends 'base.html'%}
+
+{%block head%}
+	<script type="text/javascript">
+		function add_cart(gid) {
+			//登录判断
+			// alert('正在检验');
+			$.get('/user/user_islogin/',function(data){
+				if (data.result) {
+				// 用户已经登入 ，加入购物车
+					$.get('/cart/add/',{'gid':gid},function(data){
+						//alert(data.isadd);
+						if (data.isadd==1) {
+							alert('成功添加到购物车');
+						}else if (data.isadd==0) {
+								alert('购买失败，请稍候重试');
+						}else if (data.isadd==2) {
+							alert('库存不足，请与客服联系');
+						}
+					});
+				}else {
+					//如果未登录，则tiao zhuan登录
+					// alert('未登入');
+					location.href='/user/login/';
+				}
+			});
+		};
+
+	</script>
+
+{%endblock head%}
+
+
+
+	{%block navbar%}
+	<div class="navbar_con">
+		<div class="navbar clearfix">
+			<div class="subnav_con fl">
+				<h1>全部商品分类</h1>	
+				<span></span>			
+				<ul class="subnav">
+					<li><a href="/list1_/" class="fruit">新鲜水果</a></li>
+					<li><a href="/list2_/" class="seafood">海鲜水产</a></li>
+					<li><a href="/list3_/" class="meet">猪牛羊肉</a></li>
+					<li><a href="/list4_/" class="egg">禽类蛋品</a></li>
+					<li><a href="/list5_/" class="vegetables">新鲜蔬菜</a></li>
+					<li><a href="/list6_/" class="ice">速冻食品</a></li>
+				</ul>
+			</div>
+			<ul class="navlist fl">
+				<li><a href="/index/">首页</a></li>
+				<li class="interval">|</li>
+				<li><a href="">手机生鲜</a></li>
+				<li class="interval">|</li>
+				<li><a href="">抽奖</a></li>
+			</ul>
+		</div>
+	</div>
+	{%endblock navbar%}
+
+{%block body%}　
+	<div class="breadcrumb">
+		<a href="#">全部分类</a>
+		<span>></span>
+		<a href="#">{{t1.ttitle}}</a>
+	</div>
+
+	<div class="main_wrap clearfix">
+		<div class="l_wrap fl clearfix">
+			<div class="new_goods">
+				<h3>新品推荐</h3>
+				<ul>
+				{%for goods in new_list%}
+					<li>
+						<a href="/detail{{goods.id}}/"><img src="/static/{{goods.gpic}}"></a>
+						<h4><a href="/detail{{goods.id}}/">{{goods.gtitle}}</a></h4>
+						<div class="prize">￥{{goods.gprice}}</div>
+					</li>
+				{%endfor%}
+				
+				</ul>
+			</div>
+		</div>
+
+{%load filters%}{#自定义过滤器　＊－１　点击切换排序方式#}
+		<div class="r_wrap fr clearfix">
+			<div class="sort_bar">
+			<a href="/list{{t1.id}}_/?order=1" {%if order == 1%} class="active"{%endif%}>默认</a>
+			<a href="/list{{t1.id}}_/?order=2;desc={{desc|multi}}" {%if order == 2%} class="active"{%endif%}>价格</a>
+			<a href="/list{{t1.id}}_/?order=3" {%if order == 3%} class="active"{%endif%}>人气</a>
+			
+			
+			</div>
+
+			<ul class="goods_type_list clearfix">
+				{%for goods in plist%}
+				<li>
+					<a href="/detail{{goods.id}}/"><img src="/static/{{goods.gpic}}"></a>
+					<h4><a href="/detail{{goods.id}}/">{{goods.gtitle}}</a></h4>
+					<div class="operate">
+						<span class="prize">￥{{goods.gprice}}</span>
+						<span class="unit">{{goods.gprice}}/{{goods.gunit}}</span>
+						<a href="javascript:add_cart({{goods.id}});" class="add_goods" title="加入购物车"></a>
+					</div>
+				</li>
+				{%endfor%}
+			
+			</ul>
+
+			<div class="pagenation">
+				{%if plist.has_previous%}
+					<a href="/list{{t1.id}}_１/?order={{order}}">首页</a>
+					<a href="/list{{t1.id}}_{{plist.number|add:-1}}/?order={{order}}"><上一页</a>
+				{%endif%}
+				{%if plist.paginator.num_pages <= 5%}}
+					{%for pindex in plist.paginator.page_range%}
+						{%if pindex == pIndex%}
+						<a href="#" class="active">{{pindex}}</a>
+						{%else%}
+						<a href="/list{{t1.id}}_{{pindex}}/?order={{order}}">{{pindex}}</a>
+					
+						{%endif%}
+					{%endfor%}
+					
+				{%endif%}}
+					
+				{%if plist.paginator.num_pages > 5%}}
+				
+					{%if plist.number <= 3%}
+						<a href="/list{{t1.id}}_1/?order={{order}}"{%if plist.number == 1%}class="active"{%endif%}>1</a>
+						<a href="/list{{t1.id}}_2/?order={{order}}"{%if plist.number == 2%}class="active"{%endif%}>2</a>
+						<a href="/list{{t1.id}}_3/?order={{order}}"{%if plist.number == 3%}class="active"{%endif%}>3</a>
+						<a href="/list{{t1.id}}_4/?order={{order}}">4</a>
+						<a href="/list{{t1.id}}_5/?order={{order}}">5</a>
+					
+					{%elif plist.number == plist.paginator.num_pages%}
+						<a href="/list{{t1.id}}_{{plist.number|add:-4}}/?order={{order}}">{{plist.number|add:-4}}</a>
+						<a href="/list{{t1.id}}_{{plist.number|add:-3}}/?order={{order}}">{{plist.number|add:-3}}</a>
+						<a href="/list{{t1.id}}_{{plist.number|add:-2}}/?order={{order}}">{{plist.number|add:-2}}</a>
+						<a href="/list{{t1.id}}_{{plist.number|add:-1}}/?order={{order}}">{{plist.number|add:-1}}</a>
+						<a href="/list{{t1.id}}_{{plist.number}}/?order={{order}}" class="active">{{plist.number}}</a>
+			
+					{%elif plist.number == plist.paginator.num_pages|add:-1%}
+						<a href="/list{{t1.id}}_{{plist.number|add:-3}}/?order={{order}}">{{plist.number|add:-3}}</a>
+						<a href="/list{{t1.id}}_{{plist.number|add:-2}}/?order={{order}}">{{plist.number|add:-2}}</a>
+						<a href="/list{{t1.id}}_{{plist.number|add:-1}}/?order={{order}}">{{plist.number|add:-1}}</a>
+						<a href="/list{{t1.id}}_{{plist.number}}/?order={{order}}" class="active">{{plist.number}}</a>
+						<a href="/list{{t1.id}}_{{plist.number|add:1}}/?order={{order}}">{{plist.number|add:1}}</a>
+					
+					{%else%}
+						<a href="/list{{t1.id}}_{{plist.number|add:-2}}/?order={{order}}">{{plist.number|add:-2}}</a>
+						<a href="/list{{t1.id}}_{{plist.number|add:-1}}/?order={{order}}">{{plist.number|add:-1}}</a>
+						<a href="/list{{t1.id}}_{{plist.number}}/?order={{order}}" class="active">{{plist.number}}</a>
+						<a href="/list{{t1.id}}_{{plist.number|add:1}}/?order={{order}}">{{plist.number|add:1}}</a>
+						<a href="/list{{t1.id}}_{{plist.number|add:1}}/?order={{order}}">{{plist.number|add:2}}</a>
+
+					{%endif%}}
+					
+				{%endif%}
+				
+				{%if plist.has_next%}
+					<a href="/list{{t1.id}}_{{plist.number|add:1}}/?order={{order}}">下一页></a>
+					<a href="/list{{t1.id}}_{{plist.paginator.num_pages}}/?order={{order}}">末页</a>
+				{%endif%}
+				
+
+			</div>
+		</div>
+	</div>
+{%endblock body%}
